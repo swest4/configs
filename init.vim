@@ -1,7 +1,7 @@
 call plug#begin('~/.local/share/nvim/plugged')
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'vim-scripts/ctrlp.vim'
+" Plug 'vim-scripts/ctrlp.vim'
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
 Plug 'w0rp/ale'
@@ -22,15 +22,39 @@ Plug 'andreshazard/vim-freemarker'
 Plug 'yardnsm/vim-import-cost', { 'do': 'npm install' }
 Plug 'github/copilot.vim'
 Plug 'diepm/vim-rest-console'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'sindrets/diffview.nvim'
+Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter-context'
+Plug 'mcchrish/nnn.vim'
+Plug 'nvim-telescope/telescope-file-browser.nvim'
+Plug 'nvim-tree/nvim-web-devicons'
+Plug 'nvim-neo-tree/neo-tree.nvim'
+Plug 'MunifTanjim/nui.nvim'
+Plug 'ap/vim-css-color'
+Plug 'brenoprata10/nvim-highlight-colors'
+" Themes
+Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
+Plug 'folke/tokyonight.nvim'
+Plug 'rebelot/kanagawa.nvim'
+Plug 'rmehri01/onenord.nvim', { 'branch': 'main' }
+Plug 'navarasu/onedark.nvim'
 call plug#end()
 
 let mapleader = ','
-map <C-n> :NERDTreeToggle<CR>
+" map <C-n> :NERDTreeToggle<CR>
+map <C-n> :Neotree<CR>
 noremap <Tab> :bn<CR>
 noremap <S-Tab> :bp<CR>
 noremap <C-t> :tabnew split<CR>
 inoremap jk <Esc>
 nnoremap <leader>q :bp\|bd #<CR>
+nnoremap <C-p> :Telescope find_files hidden=true<cr>
+nnoremap <C-g> :Telescope live_grep<cr>
+nnoremap <C-f> :Telescope file_browser<cr>
+nnoremap <C-j> :GitGutterNextHunk<cr>
+inoremap <C-c> "+y
 
 set mouse=a
 source $VIMRUNTIME/mswin.vim
@@ -61,8 +85,63 @@ let g:airline#extensions#tabline#enabled = 1
 
 let g:strip_whitespace_on_save=1
 
+let g:NERDTreeMinimalMenu = 1
+
 set wildignore+=*/node_modules/*,*.so,*.swp,*.zip
 
 autocmd BufWritePost *.js AsyncRun -post=checktime ./node_modules/.bin/eslint --fix %
 set autoindent
 let g:AutoPairsMapBS = 1
+
+set clipboard=unnamed
+
+" colorscheme darkblue
+" colorscheme catppuccin-macchiato " catppuccin-latte, catppuccin-frappe, catppuccin, catppuccin-mocha
+" colorscheme catppuccin-mocha
+colorscheme tokyonight-night
+" colorscheme tokyonight-storm
+" colorscheme tokyonight-moon
+
+highlight ALEWarning ctermbg=none cterm=underline
+highlight ALEError ctermbg=none cterm=underline
+
+let g:neo_tree_remove_legacy_commands = 1
+
+set t_Co=256
+set termguicolors
+
+lua <<EOF
+require("neo-tree").setup({
+  window = {
+    width = 32
+  }
+})
+require("nvim-treesitter.configs").setup({
+    ensure_installed = { "javascript", "typescript", "lua", "vim", "json", "html", "rust", "tsx" },
+    sync_install = false,
+    auto_install = true,
+    highlight = {
+        enable = true,
+    },
+})
+-- require('onedark').setup {
+--     style = 'deep'
+-- }
+-- require('onedark').load
+require'treesitter-context'.setup{
+  enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+  max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+  min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+  line_numbers = true,
+  multiline_threshold = 20, -- Maximum number of lines to collapse for a single context line
+  trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+  mode = 'cursor',  -- Line used to calculate context. Choices: 'cursor', 'topline'
+  -- Separator between context and content. Should be a single character string, like '-'.
+  -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
+  separator = nil,
+  zindex = 20, -- The Z-index of the context window
+  on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
+}
+require('nvim-highlight-colors').setup {}
+require("telescope").load_extension "file_browser"
+EOF
