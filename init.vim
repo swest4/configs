@@ -60,7 +60,7 @@ inoremap <silent> <C-k> <Plug>(copilot-prev)
 inoremap <silent> <C-/> <Plug>(copilot-dismiss)
 
 set mouse=a
-source $VIMRUNTIME/mswin.vim
+"source $VIMRUNTIME/mswin.vim
 
 set number
 
